@@ -1,0 +1,61 @@
+﻿@{
+    WantlistViewModel wantlistViewModel = Model;
+
+}
+
+
+<section id="wantlist" class="my-5 py-5">
+    <div class="container">
+        <div class="row g-md-5" id="wantlistPartial">
+            <partial name="_WantlistPartialView" model="@wantlistViewModel"></partial>
+        </div>
+    </div>
+</section>
+<script>
+    @*function IncrementQuantity(productId) {
+        const quantityInput = document.querySelector(`input[name="quantity${productId}"]`);
+        const currentQuantity = parseInt(quantityInput.value) + 1;
+        const cartPartial = document.getElementById('wantlistPartial');
+        fetch('/Wishlist/UpdateWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: productId, quantity:currentQuantity })
+        })
+        .then(response => response.text())
+        .then(data => {cartPartial.innerHTML = data});
+    }
+
+    function DecrementQuantity(productId) {
+        const quantityInput = document.querySelector(`input[name="quantity${productId}"]`);
+        let currentQuantity = parseInt(quantityInput.value);
+
+        if (currentQuantity > 0) {
+            currentQuantity = currentQuantity - 1;
+        }
+
+        const cartPartial = document.getElementById('cartPartial');
+        fetch('/Basket/UpdateBasket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: productId, quantity:currentQuantity })
+        })
+        .then(response => response.text())
+        .then(data => {cartPartial.innerHTML = data});
+    }*@
+    function RemoveItem(productId) {
+        const wantlistPartial = document.getElementById('wantlistPartial');
+        fetch('/Wishlist/UpdateWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: productId, quantity:0 })
+        })
+        .then(response => response.text())
+        .then(data => {wantlistPartial.innerHTML = data});
+    }
+</script>
