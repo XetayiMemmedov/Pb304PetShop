@@ -39,7 +39,10 @@ namespace Pb304PetShop
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.MapControllerRoute(
+                name: "wishlist",
+                pattern: "Wishlist/{action}/{productId}",
+                defaults: new { controller = "Wishlist", action = "Index" });
             app.Run();
         }
     }

@@ -1,4 +1,75 @@
-(function($) {
+function toggleWishlist(element, productId) {
+    console.log('toggleWishlist called for productId: ' + productId);
+
+    const icon = element.querySelector('iconify-icon');
+    if (!icon) {
+        console.error('Iconify icon not found inside the element');
+        return;
+    }
+
+    const isRegularHeart = icon.getAttribute('icon') === 'fluent:heart-28-regular';
+
+    if (isRegularHeart) {
+        icon.setAttribute('icon', 'fluent:heart-28-filled');
+
+        AddToWishlist(productId);
+    } else {
+        icon.setAttribute('icon', 'fluent:heart-28-regular');
+
+        RemoveFromWishlist(productId);
+    }
+}
+
+function AddToWishlist(productId) {
+    event.preventDefault();
+    console.log('AddToWishlist called for productId: ' + productId);
+    fetch(`/wishlist/addToWishlist/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({}) 
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data.message);
+            } else {
+                console.error("Failed to add to wishlist");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+}
+
+
+
+
+
+
+function RemoveFromWishlist(productId) {
+    event.preventDefault();
+    console.log('AddToWishlist called for productId: ' + productId);
+    fetch(`/wishlist/removeFromWishlist/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data.message);
+            } else {
+            console.error("Failed to remove from wishlist");
+        }
+    });
+}
+
+
+
+
+(function ($) {
 
   "use strict";
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Pb304PetShop.DataContext;
 using Pb304PetShop.Models;
 
@@ -14,21 +15,33 @@ namespace Pb304PetShop.Controllers
             _dbContext = dbContext;
         }
 
+
         public async Task<IActionResult> Index()
         {
             var sliders = await _dbContext.Sliders.ToListAsync();
             var products = await _dbContext.Products.Take(6).ToListAsync();
             var categories = await _dbContext.Categories.ToListAsync();
 
+            var wishlist = Request.Cookies["Wishlist"];
+            List<int> wishlistProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(wishlist))
+            {
+                var wishlistItems = JsonConvert.DeserializeObject<List<WishlistItemCookieModel>>(wishlist);
+                wishlistProductIds = wishlistItems?.Select(w => w.ProductId).ToList() ?? new List<int>();
+            }
+
             var model = new HomeViewModel
             {
                 Sliders = sliders,
                 Products = products,
-                Categories = categories
+                Categories = categories,
+                WishlistProductIds = wishlistProductIds
             };
 
             return View(model);
         }
+
 
         public IActionResult Test()
         {

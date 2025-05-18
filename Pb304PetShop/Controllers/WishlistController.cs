@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Pb304PetShop.DataContext;
+using Pb304PetShop.DataContext.Entities;
 using Pb304PetShop.Models;
 
 namespace Pb304PetShop.Controllers
@@ -20,7 +21,8 @@ namespace Pb304PetShop.Controllers
             return View();
         }
 
-        public IActionResult AddToWishlist(int id)
+        [HttpPost]
+        public IActionResult RemoveFromWishlist(int id)
         {
             var product = _dbContext.Products.Find(id);
 
@@ -30,31 +32,59 @@ namespace Pb304PetShop.Controllers
             }
 
             var wishlist = GetWishlist();
-
-            var exitWishlistItem = wishlist.Find(x => x.ProductId == id);
-
-            if (exitWishlistItem == null)
+            var wishlistItem = wishlist.Find(x => x.ProductId == id);
+            if (wishlistItem != null)
             {
-                wishlist.Add(new WishlistItemCookieModel { ProductId = id, Quantity = product.Quantity });
-
+                wishlist.Remove(wishlistItem);
             }
-            //else
-            //{
-            //    wishlist.Remove(exitWishlistItem);
-            //    wishlist.Add(new WishlistItemCookieModel { ProductId = id, Quantity = product.Quantity });
-
-            //}
-
-
             var wishlistJson = JsonConvert.SerializeObject(wishlist);
-
             Response.Cookies.Append(WishlistCookieKey, wishlistJson, new CookieOptions
             {
-                Expires = DateTimeOffset.Now.AddHours(1)
+                Expires = DateTimeOffset.Now.AddHours(1),
+                Path = "/",
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Lax
             });
 
-            return RedirectToAction("Index", "Home");
+            return Json(new { success = true, message = "Added to wishlist" });
+
         }
+        [HttpPost]
+        public IActionResult AddToWishlist(int id)
+        {
+            var product = _dbContext.Products.Find(id);
+            if (product == null)
+            {
+                return Json(new { success = false, message = "Product not found" });
+            }
+
+            var wishlist = GetWishlist();
+            var existingItem = wishlist.FirstOrDefault(x => x.ProductId == id);
+            if (existingItem == null)
+            {
+                wishlist.Add(new WishlistItemCookieModel { ProductId = id, Quantity = product.Quantity });
+            }
+            else
+            {
+                existingItem.Quantity = product.Quantity;
+            }
+
+            var wishlistJson = JsonConvert.SerializeObject(wishlist);
+            Response.Cookies.Append(WishlistCookieKey, wishlistJson, new CookieOptions
+            {
+                Expires = DateTimeOffset.Now.AddHours(1),
+                Path = "/",
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Lax
+            });
+
+            return Json(new { success = true, message = "Added to wishlist" });
+        }
+
+
+
 
         private List<WishlistItemCookieModel> GetWishlist()
         {
@@ -77,13 +107,9 @@ namespace Pb304PetShop.Controllers
 
         public async Task<IActionResult> Wantlist()
         {
-            var wishlist = Request.Cookies["Wishlist"];
-            if (string.IsNullOrEmpty(wishlist))
-            {
-                return Content("0");
-            }
+            
 
-            var wishlistItems = JsonConvert.DeserializeObject<List<WishlistItemCookieModel>>(wishlist);
+            var wishlistItems = GetWishlist();
 
             var wantlist = new WantlistViewModel();
             var wantlistItemList = new List<WantlistItemViewModel>();
@@ -108,6 +134,7 @@ namespace Pb304PetShop.Controllers
             wantlist.Items = wantlistItemList;
             wantlist.Quantity = wantlistItemList.Count;
             wantlist.Total = wantlistItemList.Sum(x => x.Price);
+            wantlist.WishlistProductIds = wishlistItems.Select(x => x.ProductId).ToList();
 
             return View(wantlist);
         }

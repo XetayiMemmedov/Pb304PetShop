@@ -7,5 +7,6 @@ namespace Pb304PetShop.Models
         public List<Slider> Sliders { get; set; } = new List<Slider>();
         public List<Product> Products { get; set; } = new List<Product>();
         public List<Category> Categories { get; set; } = new List<Category>();
+        public List<int> WishlistProductIds { get; set; } = new List<int>();
     }
 }

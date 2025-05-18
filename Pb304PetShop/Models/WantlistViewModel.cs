@@ -5,6 +5,8 @@
         public int Quantity { get; set; }
         public decimal Total { get; set; }
         public List<WantlistItemViewModel> Items { get; set; } = new();
+        public List<int> WishlistProductIds { get; set; } = new List<int>();
+
     }
 
     public class WantlistItemViewModel

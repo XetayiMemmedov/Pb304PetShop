@@ -57,6 +57,7 @@
         .then(response => response.text())
         .then(data => {cartPartial.innerHTML = data});
     }
+
     function RemoveItem(productId) {
         const currentQuantity =0;
         const cartPartial = document.getElementById('cartPartial');
