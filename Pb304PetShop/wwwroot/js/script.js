@@ -41,11 +41,6 @@ function AddToWishlist(productId) {
         .catch(error => console.error("Error:", error));
 }
 
-
-
-
-
-
 function RemoveFromWishlist(productId) {
     event.preventDefault();
     console.log('AddToWishlist called for productId: ' + productId);
@@ -65,6 +60,9 @@ function RemoveFromWishlist(productId) {
         }
     });
 }
+
+
+
 
 
 

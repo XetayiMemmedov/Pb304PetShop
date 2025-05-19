@@ -1,0 +1,48 @@
+﻿@model Pb304PetShop.Models.HomeViewModel
+@{
+    var products = Model.Products;
+}
+@foreach (var item in products)
+{
+    bool isInWishlist = Model.WishlistProductIds.Contains(item.Id);
+    string iconType = isInWishlist ? "fluent:heart-28-filled" : "fluent:heart-28-regular";
+    string liked = isInWishlist ? "true" : "false";
+
+    <div class="col-md-4 my-4">
+       @*  <div class="z-1 position-absolute rounded-3 m-3 px-3 border border-dark-subtle">
+            New
+        </div> *@
+        <div class="card position-relative">
+            <a asp-controller="product" asp-action="details" asp-route-id="@item.Id">
+                <img src="@Url.Content("~/images/" + item.CoverImageUrl)" class="img-fluid rounded-4" alt="image">
+            </a>
+            <div class="card-body p-0">
+                <a asp-controller="product" asp-action="details" asp-route-id="@item.Id">
+                    <h3 class="card-title pt-4 m-0">@item.Name</h3>
+                </a>
+
+                <div class="card-text">
+                    <span class="rating secondary-font">
+                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                        <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
+                        5.0
+                    </span>
+
+                    <h3 class="secondary-font text-primary">$@item.Price</h3>
+
+                    <div class="d-flex flex-wrap mt-3">
+                        <a asp-controller="basket" asp-action="addToBasket" asp-route-id="@item.Id" class="btn-cart me-3 px-4 pt-3 pb-3">
+                            <h5 class="text-uppercase m-0">Add to Cart</h5>
+                        </a>
+                        <a onclick="toggleWishlist(this, @item.Id)" asp-controller="wishlist" asp-action="addToWishlist" asp-route-id="@item.Id" class="btn-wishlist px-4 pt-3">
+                            <iconify-icon icon="@iconType" class="fs-5"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

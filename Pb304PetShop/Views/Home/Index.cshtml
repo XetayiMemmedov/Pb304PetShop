@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model Pb304PetShop.Models.HomeViewModel
+
+@{
     HomeViewModel hm = Model;
     var sliders = hm.Sliders;
     var products = hm.Products;
@@ -8,7 +11,7 @@
 <section id="banner" style="background: #F9F3EC;">
     <div class="container">
         <div class="swiper main-swiper">
-            <div class="swiper-wrapper">
+            <div class="swiper-wrapper" id="product-wrapper">
 
                 @foreach(var item in sliders)
                 {
@@ -92,7 +95,7 @@
             </div>
         </div>
 
-        <div class="products-carousel swiper" id="productcards">
+        <div class="products-carousel swiper">
             <div class="swiper-wrapper">
                 @foreach (var item in products)
                 {
@@ -138,7 +141,13 @@
                         </div>
                     </div>
                 }
-                </div>
+            </div>
+        </div>
+
+       
+
+
+
 
         <!-- / products-carousel -->
 
@@ -1012,4 +1021,6 @@
         </div>
     </div>
 </section>
+
+
 

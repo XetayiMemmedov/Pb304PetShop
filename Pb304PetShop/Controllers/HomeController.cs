@@ -19,7 +19,7 @@ namespace Pb304PetShop.Controllers
         public async Task<IActionResult> Index()
         {
             var sliders = await _dbContext.Sliders.ToListAsync();
-            var products = await _dbContext.Products.Take(6).ToListAsync();
+            var products = await _dbContext.Products.ToListAsync();
             var categories = await _dbContext.Categories.ToListAsync();
 
             var wishlist = Request.Cookies["Wishlist"];
@@ -41,6 +41,33 @@ namespace Pb304PetShop.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadMoreProducts(int skip = 6, int take = 6)
+        {
+            var products = await _dbContext.Products
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            var wishlist = Request.Cookies["Wishlist"];
+            List<int> wishlistProductIds = new();
+
+            if (!string.IsNullOrEmpty(wishlist))
+            {
+                var wishlistItems = JsonConvert.DeserializeObject<List<WishlistItemCookieModel>>(wishlist);
+                wishlistProductIds = wishlistItems?.Select(w => w.ProductId).ToList() ?? new();
+            }
+
+            var model = new HomeViewModel
+            {
+                Products = products,
+                WishlistProductIds = wishlistProductIds
+            };
+
+            return PartialView("_ProductPartialView", model);
+        }
+
 
 
         public IActionResult Test()
