@@ -51,9 +51,22 @@
             <div class="d-flex d-lg-none align-items-end mt-3">
                 <ul class="d-flex justify-content-end list-unstyled m-0">
                     <li>
-                        <a href="account.html" class="mx-3">
+                        <a asp-controller="Account" asp-action="Register" class="mx-3">
                             <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
                         </a>
+                        @if(User.Identity.IsAuthenticated)
+                        {
+                            <span>@User.Identity.Name</span>
+
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="mx-3">Login</a>
+                        }
+                        
+                        @* <a asp-controller="Account" asp-action="login" class="mx-3">
+                        <span class="fs-4">Login</span>
+                        </a> *@
                     </li>
                     <li>
                         <a href="wishlist.html" class="mx-3">
@@ -202,9 +215,21 @@
                     <div class="d-none d-lg-flex align-items-end">
                         <ul class="d-flex justify-content-end list-unstyled m-0">
                             <li>
-                                <a href="account.html" class="mx-3">
+                                <a asp-controller="Account" asp-action="Register" class="mx-3">
                                     <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
                                 </a>
+                                
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a asp-controller="Account" asp-action="ChangePassword"
+                                       class="text-primary  fw-bold"> Change Password</a>
+                                    <span>@User.Identity.Name</span>
+                                    <a asp-controller ="Account" asp-action="Logout" class="mx-3">Logout</a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Account" asp-action="Login" class="mx-3">Login</a>
+                                }
                             </li>
                             <li>
                                 <a asp-controller="wishlist" asp-action="Wantlist" class="mx-3">

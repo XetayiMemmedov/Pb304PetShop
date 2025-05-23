@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Pb304PetShop.DataContext;
@@ -6,6 +7,8 @@ using Pb304PetShop.Models;
 
 namespace Pb304PetShop.Controllers
 {
+    [Authorize]
+
     public class ShopController : Controller
     {
         private readonly AppDbContext _dbContext;
