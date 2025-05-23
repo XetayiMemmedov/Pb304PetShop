@@ -43,6 +43,10 @@ namespace Pb304PetShop
             });
 
             builder.Services.AddTransient<IMailService, MailKitMailService>();
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            });
 
             var app = builder.Build();
 

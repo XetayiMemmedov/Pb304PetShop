@@ -49,8 +49,33 @@ namespace Pb304PetShop.Controllers
                 return View(register); 
 
             }
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmlink = Url.Action("ConfirmEmail", "Account", new {userid = user.Id, token = token}, protocol: Request.Scheme);
+            _mailService.SendMail(new Mail
+            {
+                Email = user.Email,
+                Subject = "Email Confirmation",
+                TextBody = $"Please confirm your account by clicking this link: {confirmlink}"
+            });
             return RedirectToAction(nameof(Login));
 
+        }
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+                return RedirectToAction("Index", "Home");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View(nameof(Login));
+            }
+
+            return View("Error");
         }
 
         public IActionResult Login()
@@ -70,7 +95,11 @@ namespace Pb304PetShop.Controllers
                 ModelState.AddModelError("", "Username pr password is not correct");
                 return View();
             }
-
+            if (!await _userManager.IsEmailConfirmedAsync(existUser))
+            {
+                ModelState.AddModelError("", "Please confirm your email before logging in.");
+                return View();
+            }
             var result = await _signInManager.PasswordSignInAsync(existUser, login.Password, login.RememberMe, true);
             if (!result.Succeeded)
             {
